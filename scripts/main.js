@@ -34,8 +34,12 @@ function getUserInput() {
     let eighthChar1 = lastName.length > 1 ? lastName.substr(1, 1) : '9';
     let eighthChar2 = lastName.length > 0 ? lastName.substr(0, 1) : '9';
 
+    // Issue Number
+    let issueNumber = Math.floor(Math.random() * 39) + 1;
+    issueNumber = issueNumber.toString().padStart(2, '0');
+
     // Construct the full driving licence number
-    let generatedLicenceNumber = `${first}${birthYear}${birthMonth.toString().padStart(2, '0')}${birthDay}${yearDigit}${initials}9${eighthChar1}${eighthChar2}`;
+    let generatedLicenceNumber = `${first}${birthYear}${birthMonth.toString().padStart(2, '0')}${birthDay}${yearDigit}${initials}9${eighthChar1}${eighthChar2} ${issueNumber}`;
 
     document.getElementById('OutputField').value = generatedLicenceNumber;
 }
