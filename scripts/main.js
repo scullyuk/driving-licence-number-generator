@@ -1,7 +1,7 @@
 function getUserInput() {
-    let firstName = document.getElementById('FirstName').value.toUpperCase().trim();
-    let middleName = document.getElementById('MiddleName').value.toUpperCase().trim();
-    let lastName = document.getElementById('LastName').value.toUpperCase().trim();
+    let firstName = cleanString(document.getElementById('FirstName').value.toUpperCase().trim());
+    let middleName = cleanString(document.getElementById('MiddleName').value.toUpperCase().trim());
+    let lastName = cleanString(document.getElementById('LastName').value.toUpperCase().trim());
     let dateOfBirth = document.getElementById('DatePicker').value;
     let gender = document.getElementById('Gender').value.toLowerCase().trim();
 
@@ -38,6 +38,11 @@ function getUserInput() {
     let generatedLicenceNumber = `${first}${birthYear}${birthMonth.toString().padStart(2, '0')}${birthDay}${yearDigit}${initials}9${eighthChar1}${eighthChar2}`;
 
     document.getElementById('OutputField').value = generatedLicenceNumber;
+}
+
+function cleanString(str) {
+    return str.normalize("NFD") // Decompose characters into base + diacritics
+              .replace(/[^A-Z]/g, ""); // Remove non-alphabetic characters
 }
 
 function generateRandomDetails() {
