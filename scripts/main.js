@@ -45,6 +45,27 @@ function cleanString(str) {
               .replace(/[^A-Z]/g, ""); // Remove non-alphabetic characters
 }
 
+function copyInput() {
+    let outputField = document.getElementById('OutputField');
+    let originalValue = outputField.value;
+    let originalColor = outputField.style.color;
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(originalValue).then(() => {
+        // Temporarily change the value and color
+        outputField.value = "Copied to clipboard";
+        outputField.style.color = "grey";
+
+        // Restore after 1 second
+        setTimeout(() => {
+            outputField.value = originalValue;
+            outputField.style.color = originalColor;
+        }, 700);
+    }).catch(err => {
+        console.error("Failed to copy: ", err);
+    });
+}
+
 function generateRandomDetails() {
     let firstNamesGendersArray = [
         {name: 'Alexander', gender: 'm'}, {name: 'Andrew', gender: 'm'}, {name: 'Angela', gender: 'f'},
