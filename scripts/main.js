@@ -30,16 +30,19 @@ function getUserInput() {
     // Handle initials: First letter of first name + middle name (or 9 if no middle name)
     let initials = firstName.charAt(0) + (middleName ? middleName.charAt(0) : '9');
 
-    // Extract additional surname-based characters
-    let eighthChar1 = lastName.length > 1 ? lastName.substr(1, 1) : '9';
-    let eighthChar2 = lastName.length > 0 ? lastName.substr(0, 1) : '9';
+    // Generate random last 3 characters: 1 number (usually 9) + 2 random letters
+    let randomNumber = "9"; // Typically 9, can be changed if a different pattern is confirmed
+    let randomLetters = String.fromCharCode(
+        Math.floor(Math.random() * 26) + 65, // Random uppercase letter A-Z
+        Math.floor(Math.random() * 26) + 65  // Another random uppercase letter A-Z
+    );
 
     // Issue Number
     let issueNumber = Math.floor(Math.random() * 39) + 1;
     issueNumber = issueNumber.toString().padStart(2, '0');
 
     // Construct the full driving licence number
-    let generatedLicenceNumber = `${first}${birthYear}${birthMonth.toString().padStart(2, '0')}${birthDay}${yearDigit}${initials}9${eighthChar1}${eighthChar2} ${issueNumber}`;
+    let generatedLicenceNumber = `${first}${birthYear}${birthMonth.toString().padStart(2, '0')}${birthDay}${yearDigit}${initials}${randomNumber}${randomLetters} ${issueNumber}`;
 
     document.getElementById('OutputField').value = generatedLicenceNumber;
 }
