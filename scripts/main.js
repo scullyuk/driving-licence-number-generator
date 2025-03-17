@@ -1,118 +1,93 @@
 function getUserInput() {
-    let firstName = document.getElementById('FirstName').value.toUpperCase();
-    let lastName = document.getElementById('LastName').value.toUpperCase();
+    let firstName = document.getElementById('FirstName').value.toUpperCase().trim();
+    let middleName = document.getElementById('MiddleName').value.toUpperCase().trim();
+    let lastName = document.getElementById('LastName').value.toUpperCase().trim();
     let dateOfBirth = document.getElementById('DatePicker').value;
-    let gender = document.getElementById('Gender').value;
+    let gender = document.getElementById('Gender').value.toLowerCase().trim();
 
-    let first = lastName.slice(0, 3) == 'MAC' ? 'MC'.concat(lastName.slice(3,6)) : lastName.slice(0, 5);
-    if (first.length < 5) {
-        first = first.padEnd(5, '9');
+    if (!firstName || !lastName || !dateOfBirth || !gender) {
+        alert("Please make sure that you have entered a First Name, Last Name, and DOB.");
+        document.getElementById('OutputField').value = "";
+        return;
     }
-    let second = dateOfBirth.substr(2, 1);
-    let third = dateOfBirth.substr(5, 2);
+
+    // Extract date components correctly
+    let dateParts = dateOfBirth.split('-'); 
+    let birthYear = dateParts[0].charAt(2);  // Extract last 2 digits of YYYY (Correct Fix!)
+    let birthMonth = parseInt(dateParts[1], 10);
+    let birthDay = dateParts[2];
+    let yearDigit = dateParts[0].charAt(3);  // Extract 3rd digit of birth year
+
+    // Adjust birth month for females
     if (gender === 'f') {
-        third = parseInt(third, 10) + 50;
+        birthMonth += 50;
     }
-    let fourth = dateOfBirth.substr(8, 2);
-    let fith = dateOfBirth.substr(3, 1);
-    let sixth = firstName.substr(0, 2);
-    let seventh = '9';
-    let eighthChar1 = lastName.substr(1, 1);
-    let eighthChar2 = lastName.substr(0, 1);
 
-    let generatedLicenceNumber = (first.toUpperCase() + second + third + fourth + fith + sixth.toUpperCase() +
-        seventh + eighthChar1.toUpperCase() + eighthChar2.toUpperCase());
+    // Surname processing: First 5 letters, pad with 9s if needed
+    let first = lastName.startsWith("MAC") ? 'MC' + lastName.slice(3, 6) : lastName.slice(0, 5);
+    first = first.padEnd(5, '9');
 
-    if (firstName.length === 0 || lastName.length === 0 || dateOfBirth === "" || gender === "") {
-        alert("Please make sure that you have entered a First Name, Last Name and DOB.");
-        generatedLicenceNumber = "";
-    } else {
-        document.getElementById('OutputField').value = generatedLicenceNumber;
-    }
+    // Handle initials: First letter of first name + middle name (or 9 if no middle name)
+    let initials = firstName.charAt(0) + (middleName ? middleName.charAt(0) : '9');
+
+    // Extract additional surname-based characters
+    let eighthChar1 = lastName.length > 1 ? lastName.substr(1, 1) : '9';
+    let eighthChar2 = lastName.length > 0 ? lastName.substr(0, 1) : '9';
+
+    // Construct the full driving licence number
+    let generatedLicenceNumber = `${first}${birthYear}${birthMonth.toString().padStart(2, '0')}${birthDay}${yearDigit}${initials}9${eighthChar1}${eighthChar2}`;
+
+    document.getElementById('OutputField').value = generatedLicenceNumber;
 }
 
 function generateRandomDetails() {
-
     let firstNamesGendersArray = [
-        {name: 'Alexander', gender: 'm'},
-        {name: 'Andrew', gender: 'm'},
-        {name: 'Angela', gender: 'f'},
-        {name: 'Benjamin', gender: 'm'},
-        {name: 'Beth', gender: 'f'},
-        {name: 'Carl', gender: 'm'},
-        {name: 'Clarissa', gender: 'f'},
-        {name: 'Callum', gender: 'm'},
-        {name: 'Demitri', gender: 'm'},
-        {name: 'Dianne', gender: 'f'},
-        {name: 'Evan', gender: 'm'},
-        {name: 'Eugenie', gender: 'f'},
-        {name: 'Frankie', gender: 'm'},
-        {name: 'Florence', gender: 'f'},
-        {name: 'Gary', gender: 'm'},
-        {name: 'Gloria', gender: 'f'},
-        {name: 'Henry', gender: 'm'},
-        {name: 'Henrietta', gender: 'f'},
-        {name: 'Ian', gender: 'm'},
-        {name: 'Isabelle', gender: 'f'},
-        {name: 'Jamie', gender: 'm'},
-        {name: 'Jasmine', gender: 'f'},
-        {name: 'Karl', gender: 'm'},
-        {name: 'Karen', gender: 'f'},
-        {name: 'Luke', gender: 'm'},
-        {name: 'Lisa', gender: 'f'},
-        {name: 'Marcus', gender: 'm'},
-        {name: 'Maria', gender: 'f'},
-        {name: 'Nigel', gender: 'm'},
-        {name: 'Norma', gender: 'f'},
-        {name: 'Oliver', gender: 'm'},
-        {name: 'Olivia', gender: 'f'},
-        {name: 'Peter', gender: 'm'},
-        {name: 'Pauline', gender: 'f'},
-        {name: 'Quentin', gender: 'm'},
-        {name: 'Queenie', gender: 'f'},
-        {name: 'Roger', gender: 'm'},
-        {name: 'Rebecca', gender: 'f'},
-        {name: 'Rowan', gender: 'm'},
-        {name: 'Stephen', gender: 'm'},
-        {name: 'Samantha', gender: 'f'},
-        {name: 'Thomas', gender: 'm'},
-        {name: 'Toni', gender: 'f'},
-        {name: 'Uriah', gender: 'm'},
-        {name: 'Ursula', gender: 'f'},
-        {name: 'Victor', gender: 'm'},
-        {name: 'Victoria', gender: 'f'},
-        {name: 'William', gender: 'm'},
-        {name: 'Wendy', gender: 'f'},
-        {name: 'Xander', gender: 'm'},
-        {name: 'Xena', gender: 'f'},
-        {name: 'Yannick', gender: 'm'},
-        {name: 'Yvonne', gender: 'f'},
-        {name: 'Zachary', gender: 'm'},
+        {name: 'Alexander', gender: 'm'}, {name: 'Andrew', gender: 'm'}, {name: 'Angela', gender: 'f'},
+        {name: 'Benjamin', gender: 'm'}, {name: 'Beth', gender: 'f'}, {name: 'Carl', gender: 'm'},
+        {name: 'Clarissa', gender: 'f'}, {name: 'Callum', gender: 'm'}, {name: 'Demitri', gender: 'm'},
+        {name: 'Dianne', gender: 'f'}, {name: 'Evan', gender: 'm'}, {name: 'Eugenie', gender: 'f'},
+        {name: 'Frankie', gender: 'm'}, {name: 'Florence', gender: 'f'}, {name: 'Gary', gender: 'm'},
+        {name: 'Gloria', gender: 'f'}, {name: 'Henry', gender: 'm'}, {name: 'Henrietta', gender: 'f'},
+        {name: 'Ian', gender: 'm'}, {name: 'Isabelle', gender: 'f'}, {name: 'Jamie', gender: 'm'},
+        {name: 'Jasmine', gender: 'f'}, {name: 'Karl', gender: 'm'}, {name: 'Karen', gender: 'f'},
+        {name: 'Luke', gender: 'm'}, {name: 'Lisa', gender: 'f'}, {name: 'Marcus', gender: 'm'},
+        {name: 'Maria', gender: 'f'}, {name: 'Nigel', gender: 'm'}, {name: 'Norma', gender: 'f'},
+        {name: 'Oliver', gender: 'm'}, {name: 'Olivia', gender: 'f'}, {name: 'Peter', gender: 'm'},
+        {name: 'Pauline', gender: 'f'}, {name: 'Quentin', gender: 'm'}, {name: 'Queenie', gender: 'f'},
+        {name: 'Roger', gender: 'm'}, {name: 'Rebecca', gender: 'f'}, {name: 'Rowan', gender: 'm'},
+        {name: 'Stephen', gender: 'm'}, {name: 'Samantha', gender: 'f'}, {name: 'Thomas', gender: 'm'},
+        {name: 'Toni', gender: 'f'}, {name: 'Uriah', gender: 'm'}, {name: 'Ursula', gender: 'f'},
+        {name: 'Victor', gender: 'm'}, {name: 'Victoria', gender: 'f'}, {name: 'William', gender: 'm'},
+        {name: 'Wendy', gender: 'f'}, {name: 'Xander', gender: 'm'}, {name: 'Xena', gender: 'f'},
+        {name: 'Yannick', gender: 'm'}, {name: 'Yvonne', gender: 'f'}, {name: 'Zachary', gender: 'm'},
         {name: 'Zoe', gender: 'f'},
     ];
+
     let firstNameRand = firstNamesGendersArray[Math.floor(Math.random() * firstNamesGendersArray.length)];
     document.getElementById('FirstName').value = firstNameRand.name;
     document.getElementById('Gender').value = firstNameRand.gender;
 
-    let lastNamesArray = ["Hill", "Smith", "Jones", "Ballantyne", "Taylor", "Rogers", "Rowley", "Chetwynd", "Steer", "Walker", "Embury", "Dorian", "Tate",
-        "Richter", "Arnalds", "Garland", "Owen", "Croft", "Auditore", "Bell", "Bonair", "Messenger", "Nobakov", "Orwell", "LaVey", "Manson",
-        "Fish", "Kurten", "Jackson", "Ford", "King", "Potter", "Palin",
+    let lastNamesArray = ["Hill", "Smith", "Jones", "Ballantyne", "Taylor", "Rogers", "Rowley", "Chetwynd", "Steer",
+        "Walker", "Embury", "Dorian", "Tate", "Richter", "Arnalds", "Garland", "Owen", "Croft", "Auditore", "Bell",
+        "Bonair", "Messenger", "Nobakov", "Orwell", "LaVey", "Manson", "Fish", "Kurten", "Jackson", "Ford", "King",
+        "Potter", "Palin"
     ];
     let lastNameRand = lastNamesArray[Math.floor(Math.random() * lastNamesArray.length)];
     document.getElementById("LastName").value = lastNameRand;
+
+    let middleNamesArray = ["James", "Lee", "John", "Grace", "Rose", "Marie", "Ann", "Paul", "Joseph", "Kate"];
+    let middleNameRand = Math.random() < 0.5 ? middleNamesArray[Math.floor(Math.random() * middleNamesArray.length)] : "";
+    document.getElementById("MiddleName").value = middleNameRand;
 
     let yearRand = Math.floor(Math.random() * (2003 - 1945 + 1)) + 1945;
     let yearStr = yearRand.toString();
 
     let monthRand = Math.floor(Math.random() * (12 - 1 + 1)) + 1;
-    let monthStr = monthRand.toString();
-    monthStr = monthStr.padStart(2, '0');
+    let monthStr = monthRand.toString().padStart(2, '0');
 
     let dayRand = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
-    let dayStr = dayRand.toString();
-    dayStr = dayStr.padStart(2, '0');
+    let dayStr = dayRand.toString().padStart(2, '0');
 
-    dateOfBirthRand = (yearStr + "-" + monthStr + "-" + dayStr);
-
+    let dateOfBirthRand = `${yearStr}-${monthStr}-${dayStr}`;
     document.getElementById('DatePicker').value = dateOfBirthRand;
 }
