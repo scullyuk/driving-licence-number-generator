@@ -45,10 +45,13 @@ function cleanString(str) {
               .replace(/[^A-Z]/g, ""); // Remove non-alphabetic characters
 }
 
-function copyInput() {
+function copyInput(button) {
     let outputField = document.getElementById('OutputField');
     let originalValue = outputField.value;
     let originalColor = outputField.style.color;
+    
+    // Disable the button
+    button.disabled = true;
 
     // Copy to clipboard
     navigator.clipboard.writeText(originalValue).then(() => {
@@ -56,13 +59,15 @@ function copyInput() {
         outputField.value = "Copied to clipboard";
         outputField.style.color = "grey";
 
-        // Restore after 1 second
+        // Restore after 700ms
         setTimeout(() => {
             outputField.value = originalValue;
             outputField.style.color = originalColor;
+            button.disabled = false; // Re-enable the button
         }, 700);
     }).catch(err => {
         console.error("Failed to copy: ", err);
+        button.disabled = false; // Ensure button is re-enabled on failure
     });
 }
 
